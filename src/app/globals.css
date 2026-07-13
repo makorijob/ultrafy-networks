@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-slate-50 text-ink font-body antialiased;
+  background-image:
+    radial-gradient(circle at 15% 10%, rgba(29, 95, 214, 0.06), transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(18, 164, 84, 0.07), transparent 45%),
+    radial-gradient(circle at 50% 90%, rgba(226, 62, 62, 0.04), transparent 40%);
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/60 backdrop-blur-md border border-white/70 shadow-glass;
+  }
+  .glass-strong {
+    @apply bg-white/80 backdrop-blur-lg border border-white/80 shadow-glass;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-signal-green px-6 py-3 font-display font-semibold text-white transition hover:bg-signal-greendark hover:shadow-glow active:scale-[0.98];
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-signal-blue px-6 py-3 font-display font-semibold text-signal-blue transition hover:bg-signal-blue hover:text-white active:scale-[0.98];
+  }
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-signal-red px-5 py-2.5 font-display text-sm font-semibold text-white transition hover:bg-signal-reddark active:scale-[0.98];
+  }
+  .eyebrow {
+    @apply font-mono text-xs uppercase tracking-[0.25em] text-signal-blue;
+  }
+  .section-heading {
+    @apply font-display text-3xl font-bold text-ink sm:text-4xl;
+  }
+  .input-field {
+    @apply w-full rounded-xl border border-slate-200 bg-white/70 px-4 py-3 text-sm text-ink placeholder:text-slate-400 focus:border-signal-blue focus:outline-none focus:ring-2 focus:ring-signal-blue/30;
+  }
+}
+
+/* Signature element: animated fiber/network node grid used behind the hero */
+.network-grid {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.network-grid svg {
+  width: 100%;
+  height: 100%;
+}
+.network-node {
+  animation: pulseline 2.4s ease-in-out infinite;
+}
+.network-node:nth-child(2n) {
+  animation-delay: 0.6s;
+}
+.network-node:nth-child(3n) {
+  animation-delay: 1.2s;
+}
+
+/* Custom scrollbar for admin tables */
+.admin-scroll::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.admin-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}

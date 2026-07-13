@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model HeroSlide {
+  id        Int      @id @default(autoincrement())
+  imageUrl  String
+  title     String
+  subtitle  String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Package {
+  id        Int      @id @default(autoincrement())
+  name      String
+  speed     String
+  price     Int
+  freeMonth Boolean  @default(false)
+  featured  Boolean  @default(false)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Offering {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  imageUrl    String
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model Job {
+  id          Int      @id @default(autoincrement())
+  title       String
+  location    String?
+  description String
+  imageUrl    String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+model Testimonial {
+  id        Int      @id @default(autoincrement())
+  name      String
+  role      String?
+  message   String
+  imageUrl  String?
+  rating    Int      @default(5)
+  createdAt DateTime @default(now())
+}
+
+model Investment {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  imageUrl    String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+model ContactSubmission {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String?
+  phone     String?
+  subject   String?
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
