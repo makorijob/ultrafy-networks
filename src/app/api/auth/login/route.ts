@@ -3,110 +3,85 @@ import { NextRequest, NextResponse } from "next/server";
 import { 
   ADMIN_COOKIE_NAME, 
   checkPassword, 
-  expectedSessionToken,
-  getAdminPassword,
-  getSessionSecret
+  expectedSessionToken 
 } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
-    // Parse the request body
-    const body = await req.json().catch(() => {
-      throw new Error("Invalid JSON payload");
-    });
+    // Log environment (for debugging)
+    console.log("🔍 Environment:", process.env.NODE_ENV);
+    console.log("🔍 ADMIN_PASSWORD exists:", !!process.env.ADMIN_PASSWORD);
+    console.log("🔍 SESSION_SECRET exists:", !!process.env.SESSION_SECRET);
     
-    const { password } = body;
-    
-    // Validate input
-    if (!password || typeof password !== 'string') {
+    // Parse request
+    let body;
+    try {
+      body = await req.json();
+    } catch {
       return NextResponse.json(
-        { error: "Password is required and must be a string" },
+        { error: "Invalid request format" },
         { status: 400 }
       );
     }
-
-    // Check if environment variables are properly configured
-    try {
-      getAdminPassword();
-      getSessionSecret();
-    } catch (envError) {
-      console.error("❌ Environment configuration error:", envError);
+    
+    const { password } = body;
+    
+    if (!password || typeof password !== 'string') {
+      return NextResponse.json(
+        { error: "Password is required" },
+        { status: 400 }
+      );
+    }
+    
+    // Check if environment variables exist
+    if (!process.env.ADMIN_PASSWORD || !process.env.SESSION_SECRET) {
+      console.error("❌ Missing environment variables on Vercel");
       return NextResponse.json(
         { error: "Server configuration error" },
         { status: 500 }
       );
     }
-
-    // Verify the password
+    
+    // Verify password
     const isValid = await checkPassword(password);
     console.log(`🔑 Login attempt: ${isValid ? '✅ SUCCESS' : '❌ FAILED'}`);
     
     if (!isValid) {
-      // Add a small delay to prevent timing attacks
       await new Promise(resolve => setTimeout(resolve, 500));
       return NextResponse.json(
         { error: "Incorrect password" },
         { status: 401 }
       );
     }
-
-    // Generate the session token
+    
+    // Generate token
     const token = await expectedSessionToken();
-    console.log(`🔐 Session token generated (length: ${token.length})`);
-
-    // Create the response with the session cookie
+    
+    // Create response
     const response = NextResponse.json({ 
       success: true,
       message: "Login successful"
     });
-
-    // Set the secure HTTP-only cookie
+    
+    // Set cookie - Vercel compatible
     response.cookies.set(ADMIN_COOKIE_NAME, token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true, // Always true on Vercel (HTTPS)
       sameSite: "lax",
       path: "/",
       maxAge: 60 * 60 * 24 * 7, // 7 days
-      // Add priority for better browser compatibility
-      priority: "high",
     });
-
-    console.log(`🍪 Cookie set: ${ADMIN_COOKIE_NAME}`);
+    
+    console.log("🍪 Cookie set successfully");
+    console.log("🍪 Cookie name:", ADMIN_COOKIE_NAME);
     
     return response;
-
+    
   } catch (error) {
     console.error("❌ Login error:", error);
-    
-    // Return a generic error message to avoid leaking information
     return NextResponse.json(
       { error: "An unexpected error occurred" },
       { status: 500 }
     );
   }
-}
-
-// Optional: Add a GET endpoint for debugging
-export async function GET() {
-  // Only allow in development
-  if (process.env.NODE_ENV === "production") {
-    return NextResponse.json(
-      { error: "Not available in production" },
-      { status: 404 }
-    );
-  }
-
-  const hasPassword = !!process.env.ADMIN_PASSWORD;
-  const hasSecret = !!process.env.SESSION_SECRET;
-  
-  return NextResponse.json({
-    status: "Auth API is running",
-    configuration: {
-      hasAdminPassword: hasPassword,
-      hasSessionSecret: hasSecret,
-      isConfigured: hasPassword && hasSecret,
-    },
-    environment: process.env.NODE_ENV,
-    timestamp: new Date().toISOString(),
-  });
-}
+         }
