@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import HeroBackground from "./HeroBackground";
 
 type Slide = {
   id: number;
@@ -22,26 +23,8 @@ export default function Hero({ slides }: { slides: Slide[] }) {
 
   return (
     <section id="top" className="relative overflow-hidden pb-20 pt-10">
-      {/* Signature: animated fiber-network node grid */}
-      <div className="network-grid animate-drift opacity-70">
-        <svg viewBox="0 0 800 400" preserveAspectRatio="none">
-          <g stroke="#1D5FD6" strokeOpacity="0.18" strokeWidth="1">
-            <line x1="40" y1="60" x2="220" y2="140" />
-            <line x1="220" y1="140" x2="400" y2="70" />
-            <line x1="400" y1="70" x2="600" y2="160" />
-            <line x1="600" y1="160" x2="760" y2="90" />
-            <line x1="220" y1="140" x2="260" y2="300" />
-            <line x1="400" y1="70" x2="480" y2="260" />
-            <line x1="600" y1="160" x2="560" y2="330" />
-            <line x1="480" y1="260" x2="260" y2="300" />
-          </g>
-          {[
-            [40, 60], [220, 140], [400, 70], [600, 160], [760, 90], [260, 300], [480, 260], [560, 330],
-          ].map(([cx, cy], i) => (
-            <circle key={i} className="network-node" cx={cx} cy={cy} r="4" fill={i % 3 === 0 ? "#12A454" : i % 3 === 1 ? "#1D5FD6" : "#E23E3E"} />
-          ))}
-        </svg>
-      </div>
+      {/* Signature: rotating 3D globe, fiber-optic pulses, floating data particles */}
+      <HeroBackground />
 
       <div className="relative mx-auto mt-8 grid max-w-6xl gap-10 px-4 lg:grid-cols-[1.1fr,1fr] lg:items-center">
         <div className="animate-fadein">
