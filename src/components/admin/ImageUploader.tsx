@@ -33,21 +33,16 @@ export default function ImageUploader({
   return (
     <div>
       <div className="flex items-center gap-3">
-        <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+        <div className="h-16 w-16 shrink-0 overflow-hidden rounded-md border border-[#EAEAEA] bg-[#FAFAFA]">
           {value ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={value} alt="Preview" className="h-full w-full object-cover" />
           ) : (
-            <div className="grid h-full w-full place-items-center text-xs text-slate-400">No image</div>
+            <div className="grid h-full w-full place-items-center text-[10px] text-[#D4D4D4]">No image</div>
           )}
         </div>
         <div>
-          <button
-            type="button"
-            onClick={() => inputRef.current?.click()}
-            disabled={uploading}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-ink hover:bg-slate-50"
-          >
+          <button type="button" onClick={() => inputRef.current?.click()} disabled={uploading} className="av-btn-ghost !py-1.5 !text-[12px]">
             {uploading ? "Uploading…" : "Upload image"}
           </button>
           <input
@@ -60,9 +55,10 @@ export default function ImageUploader({
               if (file) handleFile(file);
             }}
           />
-          {error && <p className="mt-1 text-xs text-signal-red">{error}</p>}
+          {error && <p className="mt-1 text-[12px] text-[#EE0000]">{error}</p>}
         </div>
       </div>
     </div>
   );
-}
+    }
+            
