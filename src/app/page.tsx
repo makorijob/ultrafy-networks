@@ -11,6 +11,26 @@ import Footer from "@/components/site/Footer";
 
 export const dynamic = "force-dynamic";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.ultrafynetworks.com";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "InternetServiceProvider",
+  name: "Ultrafy Networks",
+  url: siteUrl,
+  telephone: "+254703199691",
+  email: "info.ultrafynetworks@gmail.com",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Thika",
+    addressCountry: "KE",
+  },
+  areaServed: "Thika, Kenya",
+  priceRange: "KES 1,500 - KES 3,000",
+  description:
+    "Fiber and wireless internet, hotspots, CCTV installation, access control, solar power and electric fencing in Thika, Kenya.",
+};
+
 export default async function HomePage() {
   const [slides, offerings, packages, jobs, testimonials, investments] = await Promise.all([
     prisma.heroSlide.findMany({ orderBy: { order: "asc" } }),
@@ -23,6 +43,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Navbar />
       <main>
         <Hero slides={slides} />
