@@ -28,7 +28,7 @@ export default function Hero({ slides }: { slides: Slide[] }) {
 
       <div className="relative mx-auto mt-8 grid max-w-6xl gap-10 px-4 lg:grid-cols-[1.1fr,1fr] lg:items-center">
         <div className="animate-fadein">
-          <p className="eyebrow">Thika · Fiber · Wireless · Security · Solar</p>
+          <p className="eyebrow">Ultrafy Networks · Your Trusted Internet Provider</p>
           <h1 className="mt-3 font-display text-4xl font-extrabold leading-tight text-ink sm:text-5xl">
             {current?.title ?? "Reliable Connectivity, Built for Thika"}
           </h1>
