@@ -1,38 +1,45 @@
-// src/app/api/auth/login/route.ts
+// app/api/auth/login/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { ADMIN_COOKIE_NAME } from "@/lib/auth";
+import { ADMIN_COOKIE_NAME, checkPassword } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
     const { password } = await req.json();
     
-    // Hardcoded check using your environment variable
-    const validPassword = process.env.ADMIN_PASSWORD || "1504Nick123";
+    if (!password) {
+      return NextResponse.json(
+        { error: "Password is required" },
+        { status: 400 }
+      );
+    }
+
+    const isValid = await checkPassword(password);
     
-    if (!password || password !== validPassword) {
+    if (!isValid) {
       return NextResponse.json(
         { error: "Invalid credentials" },
         { status: 401 }
       );
     }
-    
-    // Generate simple token
-    const token = Buffer.from(`${password}:${Date.now()}`).toString('base64');
+
+    // Create simple session token
+    const token = `session_${Date.now()}_${Math.random().toString(36).substring(2)}`;
     
     const response = NextResponse.json({ success: true });
     response.cookies.set(ADMIN_COOKIE_NAME, token, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: 60 * 60 * 24 * 7,
+      maxAge: 60 * 60 * 24 * 7, // 7 days
     });
     
     return response;
-  } catch {
+  } catch (error) {
+    console.error("Login error:", error);
     return NextResponse.json(
       { error: "Server error" },
       { status: 500 }
     );
   }
-      }
+}
