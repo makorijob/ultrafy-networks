@@ -80,49 +80,56 @@ export default function AdminCrud({
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h1 className="font-display text-2xl font-bold text-ink">{title}</h1>
-        <button onClick={openCreate} className="btn-primary !px-5 !py-2 text-sm">
-          + Add New
+        <div>
+          <h1 className="font-display text-xl font-semibold text-[#171717]">{title}</h1>
+          <p className="mt-0.5 text-[13px] text-[#8F8F8F]">{items.length} item{items.length === 1 ? "" : "s"}</p>
+        </div>
+        <button onClick={openCreate} className="av-btn-black">
+          <span className="text-base leading-none">+</span> Add New
         </button>
       </div>
 
-      {loading ? (
-        <p className="mt-6 text-sm text-ink/50">Loading…</p>
-      ) : (
-        <div className="admin-scroll mt-6 overflow-x-auto rounded-xl border border-slate-200 bg-white">
-          <table className="w-full min-w-[600px] text-left text-sm">
-            <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-ink/50">
+      <div className="av-card admin-scroll mt-5 overflow-x-auto">
+        {loading ? (
+          <p className="px-4 py-10 text-center text-[13px] text-[#8F8F8F]">Loading…</p>
+        ) : (
+          <table className="av-table">
+            <thead>
               <tr>
                 {fields.slice(0, 4).map((f) => (
-                  <th key={f.name} className="px-4 py-3">{f.label}</th>
+                  <th key={f.name} className="px-4 py-3 font-medium">{f.label}</th>
                 ))}
-                <th className="px-4 py-3 text-right">Actions</th>
+                <th className="px-4 py-3 text-right font-medium">Actions</th>
               </tr>
             </thead>
             <tbody>
               {items.map((item) => (
-                <tr key={item.id} className="border-b border-slate-100 last:border-0">
+                <tr key={item.id}>
                   {fields.slice(0, 4).map((f) => (
                     <td key={f.name} className="max-w-[220px] truncate px-4 py-3">
                       {f.type === "image" ? (
                         item[f.name] ? (
                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={item[f.name]} alt="" className="h-10 w-10 rounded object-cover" />
+                          <img src={item[f.name]} alt="" className="h-9 w-9 rounded-md border border-[#EAEAEA] object-cover" />
                         ) : (
-                          <span className="text-ink/30">—</span>
+                          <span className="text-[#D4D4D4]">—</span>
                         )
                       ) : f.type === "boolean" ? (
-                        item[f.name] ? "Yes" : "No"
+                        item[f.name] ? (
+                          <span className="av-badge-live">Yes</span>
+                        ) : (
+                          <span className="av-badge">No</span>
+                        )
                       ) : (
-                        String(item[f.name] ?? "—")
+                        <span className={f.type === "number" ? "font-mono" : ""}>{String(item[f.name] ?? "—")}</span>
                       )}
                     </td>
                   ))}
                   <td className="px-4 py-3 text-right">
-                    <button onClick={() => openEdit(item)} className="mr-3 text-xs font-semibold text-signal-blue hover:underline">
+                    <button onClick={() => openEdit(item)} className="mr-4 text-[13px] font-medium text-[#171717] hover:underline">
                       Edit
                     </button>
-                    <button onClick={() => handleDelete(item.id)} className="text-xs font-semibold text-signal-red hover:underline">
+                    <button onClick={() => handleDelete(item.id)} className="av-btn-danger-ghost hover:underline">
                       Delete
                     </button>
                   </td>
@@ -130,36 +137,44 @@ export default function AdminCrud({
               ))}
               {items.length === 0 && (
                 <tr>
-                  <td colSpan={fields.length + 1} className="px-4 py-8 text-center text-ink/40">
-                    Nothing here yet. Click &quot;Add New&quot; to create one.
+                  <td colSpan={fields.length + 1} className="px-4 py-12 text-center text-[13px] text-[#8F8F8F]">
+                    Nothing here yet — click &quot;Add New&quot; to create one.
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
-        </div>
-      )}
+        )}
+      </div>
 
       {showForm && editing && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-ink/40 p-4" onClick={() => setShowForm(false)}>
-          <div className="glass-strong max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6" onClick={(e) => e.stopPropagation()}>
-            <h2 className="font-display text-lg font-bold text-ink">{editing.id ? "Edit" : "Add"} {title.replace(/s$/, "")}</h2>
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/50 p-4" onClick={() => setShowForm(false)}>
+          <div
+            className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-xl border border-[#EAEAEA] bg-white shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="border-b border-[#EAEAEA] px-6 py-4">
+              <h2 className="font-display text-[15px] font-semibold text-[#171717]">
+                {editing.id ? "Edit" : "Add"} {title.replace(/s$/, "")}
+              </h2>
+            </div>
 
-            <div className="mt-5 space-y-4">
+            <div className="space-y-4 px-6 py-5">
               {fields.map((f) => (
                 <div key={f.name}>
-                  <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-ink/50">{f.label}</label>
+                  <label className="av-label">{f.label}</label>
                   {f.type === "textarea" ? (
                     <textarea
                       rows={3}
-                      className="input-field"
+                      className="av-input"
                       value={editing[f.name] ?? ""}
                       onChange={(e) => setEditing({ ...editing, [f.name]: e.target.value })}
                     />
                   ) : f.type === "boolean" ? (
-                    <label className="flex items-center gap-2 text-sm text-ink/70">
+                    <label className="flex items-center gap-2 text-[13px] text-[#525252]">
                       <input
                         type="checkbox"
+                        className="h-4 w-4 rounded border-[#D4D4D4] accent-black"
                         checked={!!editing[f.name]}
                         onChange={(e) => setEditing({ ...editing, [f.name]: e.target.checked })}
                       />
@@ -168,7 +183,7 @@ export default function AdminCrud({
                   ) : f.type === "number" ? (
                     <input
                       type="number"
-                      className="input-field"
+                      className="av-input font-mono"
                       value={editing[f.name] ?? 0}
                       onChange={(e) => setEditing({ ...editing, [f.name]: Number(e.target.value) })}
                     />
@@ -176,7 +191,7 @@ export default function AdminCrud({
                     <ImageUploader value={editing[f.name] ?? ""} onChange={(url) => setEditing({ ...editing, [f.name]: url })} />
                   ) : (
                     <input
-                      className="input-field"
+                      className="av-input"
                       required={f.required}
                       value={editing[f.name] ?? ""}
                       onChange={(e) => setEditing({ ...editing, [f.name]: e.target.value })}
@@ -186,13 +201,13 @@ export default function AdminCrud({
               ))}
             </div>
 
-            {error && <p className="mt-3 text-sm text-signal-red">{error}</p>}
+            {error && <p className="px-6 text-[13px] text-[#EE0000]">{error}</p>}
 
-            <div className="mt-6 flex justify-end gap-3">
-              <button onClick={() => setShowForm(false)} className="rounded-full border border-slate-300 px-5 py-2 text-sm font-semibold text-ink/70">
+            <div className="flex justify-end gap-2 border-t border-[#EAEAEA] px-6 py-4">
+              <button onClick={() => setShowForm(false)} className="av-btn-ghost">
                 Cancel
               </button>
-              <button onClick={handleSave} className="btn-primary !px-5 !py-2 text-sm">
+              <button onClick={handleSave} className="av-btn-black">
                 Save
               </button>
             </div>
