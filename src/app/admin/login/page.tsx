@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 export default function AdminLoginPage() {
@@ -7,7 +8,7 @@ export default function AdminLoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     setError("");
@@ -15,7 +16,9 @@ export default function AdminLoginPage() {
     try {
       const response = await fetch("/api/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ password }),
       });
 
@@ -27,8 +30,8 @@ export default function AdminLoginPage() {
         return;
       }
 
-      // Full page reload so the new cookie is guaranteed to be sent
-      // with the very next request.
+      // Reload so the authentication cookie is included
+      // on the next request.
       window.location.href = "/admin";
     } catch (err) {
       console.error("[Login] Error:", err);
@@ -44,16 +47,26 @@ export default function AdminLoginPage() {
           <span className="grid h-11 w-11 place-items-center rounded-lg bg-gradient-to-br from-signal-blue to-signal-green font-display text-lg font-extrabold text-white">
             U
           </span>
+
           <div className="text-center">
-            <p className="font-display text-[15px] font-semibold text-[#171717]">Ultrafy Networks</p>
-            <p className="font-mono text-[11px] text-[#8F8F8F]">admin console</p>
+            <p className="font-display text-[15px] font-semibold text-[#171717]">
+              Ultrafy Networks
+            </p>
+
+            <p className="font-mono text-[11px] text-[#8F8F8F]">
+              admin console
+            </p>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="rounded-xl border border-[#EAEAEA] bg-white p-6 shadow-sm">
+        <form
+          onSubmit={handleSubmit}
+          className="rounded-xl border border-[#EAEAEA] bg-white p-6 shadow-sm"
+        >
           <label htmlFor="password" className="av-label">
             Password
           </label>
+
           <input
             id="password"
             type="password"
@@ -72,7 +85,11 @@ export default function AdminLoginPage() {
             </div>
           )}
 
-          <button type="submit" disabled={loading} className="av-btn-black mt-5 w-full !py-2.5">
+          <button
+            type="submit"
+            disabled={loading}
+            className="av-btn-black mt-5 w-full !py-2.5"
+          >
             {loading ? "Signing in…" : "Sign In"}
           </button>
 
@@ -82,7 +99,12 @@ export default function AdminLoginPage() {
         </form>
 
         <p className="mt-5 text-center text-[12px] text-[#8F8F8F]">
-          <a href="/" className="hover:text-[#171717] hover:underline">← Back to site</a>
+          <Link
+            href="/"
+            className="hover:text-[#171717] hover:underline"
+          >
+            ← Back to site
+          </Link>
         </p>
       </div>
     </div>
